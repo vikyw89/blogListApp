@@ -67,9 +67,56 @@ const mostBlogs = (blogs) => {
     return resultList[highestCountIndex]
 }
 
+const mostLikes = (blogs) => {
+    if (blogs.length === 0) {
+        return {
+            author: null,
+            likes: null
+        }
+    }
+    let authorList = blogs.map((blog)=> {
+        return blog.author
+    })
+    // Get unduplicated list of author
+    let uniqueAuthorList = authorList.filter((author, index) => {
+        return authorList.indexOf(author) === index;
+    });
+    // Get list of author total likes
+    let totalLikeList = []
+    for (let index in uniqueAuthorList) {
+        let likeCount = 0
+        for (let element of blogs) {
+            if (uniqueAuthorList[index] === element.author) {
+                likeCount += element.likes
+            }
+        }
+        totalLikeList[index] = likeCount
+    }
+    // Create list of objects per author total like
+    result = []
+    for (let index in uniqueAuthorList) {
+        temp = {
+            author: uniqueAuthorList[index],
+            likes: totalLikeList[index]
+        }
+        result.push(temp)
+    }
+    // Send the object with the most likes
+    let highestLike = 0
+    let highestLikeIndex = 0
+    for (let index in result) {
+        if (result[index]['likes'] > highestLike) {
+            highestLike = result[index]['likes']
+            highestLikeIndex = index
+        }
+    }
+    return result[highestLikeIndex]
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
